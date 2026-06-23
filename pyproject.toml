@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vllm-tilelang-rmsnorm"
+version = "0.1.0"
+description = "vLLM plugin that replaces RMSNorm with a TileLang kernel"
+requires-python = ">=3.10"
+dependencies = ["tilelang"]
+
+# THIS is the only line that ties us into vLLM's plugin system.
+# vLLM's load_general_plugins() scans the "vllm.general_plugins" entry-point
+# group in every process, imports the target, and CALLS it. So vLLM will call
+# vllm_tilelang_rmsnorm.register() automatically at startup.
+[project.entry-points."vllm.general_plugins"]
+tilelang_rmsnorm = "vllm_tilelang_rmsnorm:register"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["vllm_tilelang_rmsnorm*"]
